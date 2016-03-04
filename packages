@@ -1,0 +1,16 @@
+apg
+git
+git-gui
+iotop
+lshw
+mosh
+openvpn
+pwgen
+python-virtualenvwrapper
+tigervnc
+tmux
+qemu-kvm
+libvirt
+virt-install
+bridge-utils
+libvirt-daemon-kvm
