@@ -1,6 +1,5 @@
 #!/bin/bash -eux
 
-
 do_install() {
   cdir=$PWD
   mkdir -p src
@@ -27,8 +26,7 @@ url="https://github.com/postmodern/chruby/archive/v${version}.tar.gz"
 
 do_install
 
-echo "
-Add the following to the ~/.bashrc or ~/.zshrc file:
+# make sure we got the ruby build deps installed
+sudo dnf install -y gcc automake zlib-devel libyaml-devel openssl-devel gdbm-devel readline-devel ncurses-devel libffi-d
+evel || true
 
-source /usr/local/share/chruby/chruby.sh
-"

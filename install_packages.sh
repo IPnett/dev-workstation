@@ -1,4 +1,4 @@
 #!/bin/bash -eux
 
-cat packages | xargs -n1 sudo dnf -y install
+cat packages | grep -v ^\# | xargs -n1 sudo dnf -y install
 

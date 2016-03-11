@@ -1,16 +1,18 @@
+# generic non-graphical tools
 apg
+bridge-utils
 git
-git-gui
+htop
 iotop
+libvirt
+libvirt-daemon-kvm
 lshw
 mosh
 openvpn
 pwgen
 python-virtualenvwrapper
-tigervnc
-tmux
 qemu-kvm
-libvirt
+tmux
 virt-install
-bridge-utils
-libvirt-daemon-kvm
+# ruby/puppet build deps
+gcc gcc-c++ automake zlib-devel libyaml-devel openssl-devel gdbm-devel readline-devel ncurses-devel libffi-devel
