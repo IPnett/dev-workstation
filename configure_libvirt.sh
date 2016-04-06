@@ -15,3 +15,6 @@ polkit.addRule(function(action, subject) {
 ' | sudo tee /etc/polkit-1/rules.d/10.libvirt.rules
 sudo systemctl restart libvirtd
 
+# enable nested kvm support
+echo "options kvm_intel nested=1" | sudo tee /etc/modprobe.d/kvm.conf
+
