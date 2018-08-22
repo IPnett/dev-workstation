@@ -1,6 +1,6 @@
 #!/bin/bash -eux
 
-version="1.1.3"
+version="1.2.5"
 filename="packer_${version}_linux_amd64.zip"
 url="https://releases.hashicorp.com/packer/${version}/${filename}"
 
