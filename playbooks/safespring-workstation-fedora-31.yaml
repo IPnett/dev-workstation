@@ -1,0 +1,92 @@
+---
+
+# Installs packages, fixes kernel options and groups and pulls git repos.
+# Currently only tested with / working on Fedora 31.
+
+- name: install / configure workstation
+  hosts: localhost
+  become: True
+  become_method: sudo
+  tasks:
+    - name: install required packages
+      package:
+        name:
+          - tmux
+          - ansible
+          - sshuttle
+          - thunderbird
+          - vim-enhanced
+          - direnv
+          - hub
+          - pass
+          - python3-virtualenvwrapper
+          - docker
+          - qemu-kvm
+          - libvirt-client
+          - python-devel
+          - python-pip
+          - python-virtualenvwrapper
+          - gcc
+        state: present
+    - name: add user to relevant groups
+      user:
+        name: "{{ lookup('env', 'USER') }}"
+        append: True
+        groups:
+          - docker
+          - libvirt
+
+    - name: see if GRUB_CMDLINE_LINUX has docker modification
+      shell: "grep 'GRUB_CMDLINE_LINUX=.*systemd.unified_cgroup_hierarchy.*' /etc/default/grub"
+      register: grub_docker_grep
+      changed_when: false
+      failed_when: false
+
+    - name: modify GRUB_CMDLINE_LINUX for docker purposes
+      replace:
+        path: '/etc/default/grub'
+        regexp: '^GRUB_CMDLINE_LINUX="([^"]*)'
+        replace: 'GRUB_CMDLINE_LINUX="\1 systemd.unified_cgroup_hierarchy=0'
+      when: '"systemd.unified_cgroup_hierarchy" not in grub_docker_grep.stdout'
+      register: grub_changed
+
+    - name: refresh grub if changed
+      shell: "grub2-mkconfig -o /boot/efi/EFI/fedora/grub.cfg"
+      when: grub_changed.changed
+
+- name: userland stuff
+  hosts: localhost
+  tasks:
+    - name: git pull safespring repos
+      git:
+        repo: "git@github.com:safespring/{{ item }}.git"
+        dest: "~/work/{{ item }}"
+      loop:
+        - 'ansible'
+        - 'baas-pl-cli'
+        - 'ca.sh'
+        - 'cloud-enc-config'
+        - 'cloud-infra'
+        - 'cloud-puppet'
+        - 'dev-workstation'
+        - 'docs'
+        - 'docs-internal'
+        - 'factory'
+        - 'foreman-templates'
+        - 'kubernetes-terraform'
+        - 'restintsm'
+        - 'restintsm-api'
+        - 'seter'
+        - 'smie'
+        - 'tcli'
+        - 'tcli-incident'
+        - 'tcli-onboarding'
+        - 'tcli-oncall'
+        - 'web'
+
+    - name: create oscli virtualenv
+      pip:
+        virtualenv: "{{ ansible_user_dir }}/.virtualenvs/oscli/"
+        name:
+          - python-openstackclient
+
